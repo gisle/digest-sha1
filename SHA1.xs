@@ -50,6 +50,11 @@ extern "C" {
    #define SvPVbyte SvPV
 #endif
 
+#ifndef dTHX
+   #define pTHX_
+   #define aTHX_
+#endif
+
 /* NIST Secure Hash Algorithm */
 /* heavily modified by Uwe Hollerbach <uh@alumni.caltech edu> */
 /* from Peter C. Gutmann's implementation as found in */

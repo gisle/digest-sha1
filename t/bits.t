@@ -7,7 +7,7 @@ use Digest::SHA1;
 
 my $sha1 = Digest::SHA1->new;
 
-if ($Digest::base::VERSION) {
+if ($Digest::base::VERSION && $Digest::base::VERSION) {
     $sha1->add_bits("01111111");
     ok($sha1->hexdigest, "23833462f55515a900e016db2eb943fb474c19f6");
     eval {
