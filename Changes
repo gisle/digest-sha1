@@ -1,3 +1,11 @@
+2004-04-05   Gisle Aas <gisle@ActiveState.com>
+
+   Release 2.10
+
+   Restore compatibility with perl-5.004 and perl-5.005.
+
+
+
 2004-04-01   Gisle Aas <gisle@ActiveState.com>
 
    Release 2.09
