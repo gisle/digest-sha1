@@ -614,6 +614,6 @@ sha1_transform(...)
         memcpy (test, data, len);
 	memcpy ((&ctx)->data, test, 64);
         sha_transform_and_copy(digeststr, &ctx);
-        ST(0) = newSVpv(digeststr, 20);
+        ST(0) = newSVpv((char*)digeststr, 20);
         XSRETURN(1);
 
