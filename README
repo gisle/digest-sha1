@@ -1,0 +1,15 @@
+This distribution provide version 0.01 of the Digest::SHA1 module.  It
+is a very simple adaptor for Uwe Hollerbach's SHA.pm module that make
+it conform to the common Digest:: module interface.  It is currently
+needed to make the Digest::HMAC_SHA1 module distributed in the
+Digest-MD5 distribution work.
+
+The plan is that Uwe will provide a real Digest::SHA1 implementation
+soon, and make SHA.pm be "emulated" instead.  This module will go away
+then.
+
+See also L<Digest> and L<Digest::MD5> found in the Digest-MD5
+distribution.
+
+-- 
+Gisle Aas <gisle@aas.no>
