@@ -88,7 +88,7 @@ string "=" to the result.
 
 =item sha1_transform($data)
 
-Implements the basic SHA1 trasnform on a 64 byte block. $data and the returned $digest are
+Implements the basic SHA1 transform on a 64 byte block. $data and the returned $digest are
 in binary form. This algorithm is used in NIST FIPS 186-2
 
 =back
