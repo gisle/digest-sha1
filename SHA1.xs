@@ -39,7 +39,11 @@ extern "C" {
 
 /* Useful defines & typedefs */
 
+#if defined(U64TYPE) && (defined(USE_64_BIT_INT) || ((BYTEORDER != 0x1234) && (BYTEORDER != 0x4321)))
+typedef U64TYPE ULONG;
+#else
 typedef unsigned long ULONG;     /* 32-or-more-bit quantity */
+#endif
 
 #define SHA_BLOCKSIZE		64
 #define SHA_DIGESTSIZE		20
@@ -121,6 +125,7 @@ nether regions of the anatomy...
 
 #if BYTEORDER == 0x1234
 #define SWAP_DONE
+    assert(sizeof(ULONG) == 4);
     for (i = 0; i < 16; ++i) {
 	T = *((ULONG *) dp);
 	dp += 4;
@@ -131,6 +136,7 @@ nether regions of the anatomy...
 
 #if BYTEORDER == 0x4321
 #define SWAP_DONE
+    assert(sizeof(ULONG) == 4);
     for (i = 0; i < 16; ++i) {
 	T = *((ULONG *) dp);
 	dp += 4;
@@ -140,6 +146,7 @@ nether regions of the anatomy...
 
 #if BYTEORDER == 0x12345678
 #define SWAP_DONE
+    assert(sizeof(ULONG) == 8);
     for (i = 0; i < 16; i += 2) {
 	T = *((ULONG *) dp);
 	dp += 8;
@@ -153,6 +160,7 @@ nether regions of the anatomy...
 
 #if BYTEORDER == 0x87654321
 #define SWAP_DONE
+    assert(sizeof(ULONG) == 8);
     for (i = 0; i < 16; i += 2) {
 	T = *((ULONG *) dp);
 	dp += 8;
