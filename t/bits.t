@@ -1,5 +1,15 @@
 #!perl -w
 
+BEGIN {
+    if ($] < 5.005) {
+	# Test module can't be expected to be available
+	# and I ended up with seg faults when trying to
+	# load it with eval { require Test };
+	print "1..0\n";
+	exit;
+    }
+}
+
 use Test qw(plan ok);
 plan tests => 2;
 
