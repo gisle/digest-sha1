@@ -61,6 +61,13 @@ extern "C" {
 
 #if defined(U64TYPE) && (defined(USE_64_BIT_INT) || ((BYTEORDER != 0x1234) && (BYTEORDER != 0x4321)))
 typedef U64TYPE ULONG;
+# if BYTEORDER == 0x1234
+#   undef BYTEORDER
+#   define BYTEORDER 0x12345678
+# elif BYTEORDER == 0x4321
+#   undef BYTEORDER
+#   define BYTEORDER 0x87654321   
+# endif
 #else
 typedef unsigned long ULONG;     /* 32-or-more-bit quantity */
 #endif
