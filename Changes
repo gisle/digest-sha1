@@ -1,3 +1,15 @@
+2002-12-27   Gisle Aas <gisle@ActiveState.com>
+
+   Release 2.02
+
+   Make it work when there is a mismatch between the
+   sizeof(BYTEORDER) and sizeof(long).  Based on patch
+   Allen Smith <easmith@beatrice.rutgers.edu>.
+
+   Support UTF8 strings in newer versions of Perl.
+
+
+
 2001-12-30   Gisle Aas <gisle@ActiveState.com>
 
    Release 2.01
