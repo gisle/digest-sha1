@@ -598,11 +598,11 @@ sha1(...)
         XSRETURN(1);
 
 void
-sha1_transform(...)
+sha1_transform(SV* data)
     PREINIT:
         SHA_INFO ctx;
         int i;
-        unsigned char *data;
+        unsigned char *data_pv;
         unsigned char test[64];
         STRLEN len;
         unsigned char digeststr[20];
@@ -610,8 +610,8 @@ sha1_transform(...)
         sha_init(&ctx);
         
         memset (test, 0, 64);
-        data = (unsigned char *)(SvPVbyte(ST(0), len));
-        memcpy (test, data, len);
+        data_pv = (unsigned char *)(SvPVbyte(data, len));
+        memcpy (test, data_pv, len);
 	memcpy ((&ctx)->data, test, 64);
         sha_transform_and_copy(digeststr, &ctx);
         ST(0) = newSVpv((char*)digeststr, 20);
