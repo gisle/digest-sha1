@@ -598,7 +598,8 @@ sha1(...)
         XSRETURN(1);
 
 void
-sha1_transform(SV* data)
+sha1_transform(data)
+	SV* data
     PREINIT:
         SHA_INFO ctx;
         int i;
