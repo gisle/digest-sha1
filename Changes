@@ -1,5 +1,15 @@
 2004-04-01   Gisle Aas <gisle@ActiveState.com>
 
+   Release 2.09
+
+   The 2.08 release did not compile with a threaded debugging
+   perl, because assert() then needs my_perl.  Fixed by commenting
+   out the asserts.
+
+
+
+2004-04-01   Gisle Aas <gisle@ActiveState.com>
+
    Release 2.08
 
    Enable PERL_NO_GET_CONTEXT for more more efficient execution
