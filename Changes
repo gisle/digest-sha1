@@ -4,7 +4,7 @@
 
    Make it work when there is a mismatch between the
    sizeof(BYTEORDER) and sizeof(long).  Based on patch
-   Allen Smith <easmith@beatrice.rutgers.edu>.
+   by Allen Smith <easmith@beatrice.rutgers.edu>.
 
    Support UTF8 strings in newer versions of Perl.
 
