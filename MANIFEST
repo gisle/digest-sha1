@@ -7,5 +7,6 @@ SHA1.xs
 fip180-1.gif
 fip180-1.html
 t/badfile.t
+t/bits.t
 t/sha1.t
 typemap

@@ -3,7 +3,7 @@ package Digest::SHA1;
 use strict;
 use vars qw($VERSION @ISA @EXPORT_OK);
 
-$VERSION = '2.06';  # $Date$
+$VERSION = '2.07';  # $Date$
 
 require Exporter;
 *import = \&Exporter::import;
@@ -11,9 +11,17 @@ require Exporter;
 
 require DynaLoader;
 @ISA=qw(DynaLoader);
-Digest::SHA1->bootstrap($VERSION);
 
-*reset = \&new;
+eval {
+    require Digest::base;
+    push(@ISA, 'Digest::base');
+};
+if ($@) {
+    my $err = $@;
+    *add_bits = sub { die $err };
+}
+
+Digest::SHA1->bootstrap($VERSION);
 
 1;
 __END__
@@ -166,6 +174,17 @@ or reset the $sha1 object if this occurs.
 In most cases you want to make sure that the $io_handle is in
 C<binmode> before you pass it as argument to the addfile() method.
 
+=item $md5->add_bits($data, $nbits)
+
+=item $md5->add_bits($bitstring)
+
+This implementation of SHA-1 only supports byte oriented input so you
+might only add bits as multiples of 8.  If you need bit level support
+please consider using the C<Digest::SHA> module instead.  The
+add_bits() method is provided here for compatibility with other digest
+implementations.  See L<Digest> for description of the arguments that
+add_bits() take.
+
 =item $sha1->digest
 
 Return the binary digest for the message.  The returned string will be
@@ -199,7 +218,7 @@ md5 digests you might want to append the string "=" to the result.
 
 =head1 SEE ALSO
 
-L<Digest>, L<Digest::HMAC_SHA1>, L<Digest::MD5>
+L<Digest>, L<Digest::HMAC_SHA1>, L<Digest::SHA>, L<Digest::MD5>
 
 http://www.itl.nist.gov/fipspubs/fip180-1.htm
 
