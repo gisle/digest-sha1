@@ -3,6 +3,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#define PERL_NO_GET_CONTEXT     /* we want efficiency */
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
@@ -366,7 +367,7 @@ static void sha_final(unsigned char digest[20], SHA_INFO *sha_info)
 #define INT2PTR(any,d)	(any)(d)
 #endif
 
-static SHA_INFO* get_sha_info(SV* sv)
+static SHA_INFO* get_sha_info(pTHX_ SV* sv)
 {
     if (sv_derived_from(sv, "Digest::SHA1"))
 	return INT2PTR(SHA_INFO*, SvIV(SvRV(sv)));
@@ -420,7 +421,7 @@ static char* base64_20(const unsigned char* from, char* to)
 #define F_HEX 1
 #define F_B64 2
 
-static SV* make_mortal_sv(const unsigned char *src, int type)
+static SV* make_mortal_sv(pTHX_ const unsigned char *src, int type)
 {
     STRLEN len;
     char result[41];
@@ -469,7 +470,7 @@ new(xclass)
 	    sv_setref_pv(ST(0), sclass, (void*)context);
 	    SvREADONLY_on(SvRV(ST(0)));
 	} else {
-	    context = get_sha_info(xclass);
+	    context = get_sha_info(aTHX_ xclass);
 	}
 	sha_init(context);
 	XSRETURN(1);
@@ -478,7 +479,7 @@ void
 clone(self)
         SV* self
     PREINIT:
-        SHA_INFO* cont = get_sha_info(self);
+        SHA_INFO* cont = get_sha_info(aTHX_ self);
         char *myname = sv_reftype(SvRV(self),TRUE);
         SHA_INFO* context;
     PPCODE:
@@ -500,7 +501,7 @@ void
 add(self, ...)
 	SV* self
     PREINIT:
-	SHA_INFO* context = get_sha_info(self);
+	SHA_INFO* context = get_sha_info(aTHX_ self);
 	int i;
 	unsigned char *data;
 	STRLEN len;
@@ -516,7 +517,7 @@ addfile(self, fh)
 	SV* self
 	InputStream fh
     PREINIT:
-	SHA_INFO* context = get_sha_info(self);
+	SHA_INFO* context = get_sha_info(aTHX_ self);
 	unsigned char buffer[4096];
 	int  n;
     CODE:
@@ -547,7 +548,7 @@ digest(context)
     PPCODE:
         sha_final(digeststr, context);
 	sha_init(context);  /* In case it is reused */
-        ST(0) = make_mortal_sv(digeststr, ix);
+        ST(0) = make_mortal_sv(aTHX_ digeststr, ix);
         XSRETURN(1);
 
 void
@@ -594,7 +595,7 @@ sha1(...)
 	    sha_update(&ctx, data, len);
 	}
 	sha_final(digeststr, &ctx);
-        ST(0) = make_mortal_sv(digeststr, ix);
+        ST(0) = make_mortal_sv(aTHX_ digeststr, ix);
         XSRETURN(1);
 
 void

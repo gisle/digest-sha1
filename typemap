@@ -2,4 +2,4 @@ SHA_INFO*	T_SHA_INFO
 
 INPUT
 T_SHA_INFO
-	$var = get_sha_info($arg)
+	$var = get_sha_info(aTHX_ $arg)

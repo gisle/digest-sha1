@@ -1,3 +1,14 @@
+2004-04-01   Gisle Aas <gisle@ActiveState.com>
+
+   Release 2.08
+
+   Enable PERL_NO_GET_CONTEXT for more more efficient execution
+   on a threaded perl.
+
+   Fix up md5 references.  Patch by Ville Skyttä <ville.skytta@iki.fi>.
+
+
+
 2003-12-05   Gisle Aas <gisle@ActiveState.com>
 
    Release 2.07
