@@ -1,3 +1,10 @@
+2003-06-04   Mike McCauley (mikem@open.com.au)
+
+   Release 2.03
+
+   Added sha1_transform, required to implement NIST FIPS 186-2.
+
+
 2002-12-27   Gisle Aas <gisle@ActiveState.com>
 
    Release 2.02

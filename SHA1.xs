@@ -295,8 +295,33 @@ static void sha_update(SHA_INFO *sha_info, U8 *buffer, int count)
     sha_info->local = count;
 }
 
-/* finish computing the SHA digest */
 
+static void sha_transform_and_copy(unsigned char digest[20], SHA_INFO *sha_info)
+{
+    sha_transform(sha_info);
+    digest[ 0] = (unsigned char) ((sha_info->digest[0] >> 24) & 0xff);
+    digest[ 1] = (unsigned char) ((sha_info->digest[0] >> 16) & 0xff);
+    digest[ 2] = (unsigned char) ((sha_info->digest[0] >>  8) & 0xff);
+    digest[ 3] = (unsigned char) ((sha_info->digest[0]      ) & 0xff);
+    digest[ 4] = (unsigned char) ((sha_info->digest[1] >> 24) & 0xff);
+    digest[ 5] = (unsigned char) ((sha_info->digest[1] >> 16) & 0xff);
+    digest[ 6] = (unsigned char) ((sha_info->digest[1] >>  8) & 0xff);
+    digest[ 7] = (unsigned char) ((sha_info->digest[1]      ) & 0xff);
+    digest[ 8] = (unsigned char) ((sha_info->digest[2] >> 24) & 0xff);
+    digest[ 9] = (unsigned char) ((sha_info->digest[2] >> 16) & 0xff);
+    digest[10] = (unsigned char) ((sha_info->digest[2] >>  8) & 0xff);
+    digest[11] = (unsigned char) ((sha_info->digest[2]      ) & 0xff);
+    digest[12] = (unsigned char) ((sha_info->digest[3] >> 24) & 0xff);
+    digest[13] = (unsigned char) ((sha_info->digest[3] >> 16) & 0xff);
+    digest[14] = (unsigned char) ((sha_info->digest[3] >>  8) & 0xff);
+    digest[15] = (unsigned char) ((sha_info->digest[3]      ) & 0xff);
+    digest[16] = (unsigned char) ((sha_info->digest[4] >> 24) & 0xff);
+    digest[17] = (unsigned char) ((sha_info->digest[4] >> 16) & 0xff);
+    digest[18] = (unsigned char) ((sha_info->digest[4] >>  8) & 0xff);
+    digest[19] = (unsigned char) ((sha_info->digest[4]      ) & 0xff);
+}
+
+/* finish computing the SHA digest */
 static void sha_final(unsigned char digest[20], SHA_INFO *sha_info)
 {
     int count;
@@ -322,28 +347,9 @@ static void sha_final(unsigned char digest[20], SHA_INFO *sha_info)
     sha_info->data[61] = (lo_bit_count >> 16) & 0xff;
     sha_info->data[62] = (lo_bit_count >>  8) & 0xff;
     sha_info->data[63] = (lo_bit_count >>  0) & 0xff;
-    sha_transform(sha_info);
-    digest[ 0] = (unsigned char) ((sha_info->digest[0] >> 24) & 0xff);
-    digest[ 1] = (unsigned char) ((sha_info->digest[0] >> 16) & 0xff);
-    digest[ 2] = (unsigned char) ((sha_info->digest[0] >>  8) & 0xff);
-    digest[ 3] = (unsigned char) ((sha_info->digest[0]      ) & 0xff);
-    digest[ 4] = (unsigned char) ((sha_info->digest[1] >> 24) & 0xff);
-    digest[ 5] = (unsigned char) ((sha_info->digest[1] >> 16) & 0xff);
-    digest[ 6] = (unsigned char) ((sha_info->digest[1] >>  8) & 0xff);
-    digest[ 7] = (unsigned char) ((sha_info->digest[1]      ) & 0xff);
-    digest[ 8] = (unsigned char) ((sha_info->digest[2] >> 24) & 0xff);
-    digest[ 9] = (unsigned char) ((sha_info->digest[2] >> 16) & 0xff);
-    digest[10] = (unsigned char) ((sha_info->digest[2] >>  8) & 0xff);
-    digest[11] = (unsigned char) ((sha_info->digest[2]      ) & 0xff);
-    digest[12] = (unsigned char) ((sha_info->digest[3] >> 24) & 0xff);
-    digest[13] = (unsigned char) ((sha_info->digest[3] >> 16) & 0xff);
-    digest[14] = (unsigned char) ((sha_info->digest[3] >>  8) & 0xff);
-    digest[15] = (unsigned char) ((sha_info->digest[3]      ) & 0xff);
-    digest[16] = (unsigned char) ((sha_info->digest[4] >> 24) & 0xff);
-    digest[17] = (unsigned char) ((sha_info->digest[4] >> 16) & 0xff);
-    digest[18] = (unsigned char) ((sha_info->digest[4] >>  8) & 0xff);
-    digest[19] = (unsigned char) ((sha_info->digest[4]      ) & 0xff);
+    sha_transform_and_copy(digest, sha_info);
 }
+
 
 
 
@@ -583,3 +589,24 @@ sha1(...)
 	sha_final(digeststr, &ctx);
         ST(0) = make_mortal_sv(digeststr, ix);
         XSRETURN(1);
+
+void
+sha1_transform(...)
+    PREINIT:
+        SHA_INFO ctx;
+        int i;
+        unsigned char *data;
+        unsigned char test[64];
+        STRLEN len;
+        unsigned char digeststr[20];
+    PPCODE:
+        sha_init(&ctx);
+        
+        memset (test, 0, 64);
+        data = (unsigned char *)(SvPVbyte(ST(0), len));
+        memcpy (test, data, len);
+	memcpy ((&ctx)->data, test, 64);
+        sha_transform_and_copy(digeststr, &ctx);
+        ST(0) = newSVpv(digeststr, 20);
+        XSRETURN(1);
+
