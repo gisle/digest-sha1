@@ -4,7 +4,7 @@ package Digest::SHA1;
 # interface as Digest::MD5 (and Digest::HMAC).  This should really be
 # implemented similar to how Digest::MD5 is, and SHA made into a stub.
 
-$VERSION = '0.01';
+$VERSION = '0.01';  # $Date$
 
 use SHA 1.2;
 
