@@ -10,6 +10,25 @@ extern "C" {
 }
 #endif
 
+#ifdef SvPVbyte
+   #if PERL_REVISION == 5 && PERL_VERSION < 7
+       /* SvPVbyte does not work in perl-5.6.1, borrowed version for 5.7.3 */
+       #undef SvPVbyte
+       #define SvPVbyte(sv, lp) \
+          ((SvFLAGS(sv) & (SVf_POK|SVf_UTF8)) == (SVf_POK) \
+           ? ((lp = SvCUR(sv)), SvPVX(sv)) : my_sv_2pvbyte(aTHX_ sv, &lp))
+
+       static char *
+       my_sv_2pvbyte(pTHX_ register SV *sv, STRLEN *lp)
+       {
+           sv_utf8_downgrade(sv,0);
+           return SvPV(sv,*lp);
+       }
+   #endif
+#else
+   #define SvPVbyte SvPV
+#endif
+
 /* NIST Secure Hash Algorithm */
 /* heavily modified by Uwe Hollerbach <uh@alumni.caltech edu> */
 /* from Peter C. Gutmann's implementation as found in */
@@ -430,7 +449,7 @@ add(self, ...)
 	STRLEN len;
     PPCODE:
 	for (i = 1; i < items; i++) {
-	    data = (unsigned char *)(SvPV(ST(i), len));
+	    data = (unsigned char *)(SvPVbyte(ST(i), len));
 	    sha_update(context, data, len);
 	}
 	XSRETURN(1);  /* self */
@@ -482,7 +501,7 @@ sha1(...)
     PPCODE:
 	sha_init(&ctx);
 	for (i = 0; i < items; i++) {
-	    data = (unsigned char *)(SvPV(ST(i), len));
+	    data = (unsigned char *)(SvPVbyte(ST(i), len));
 	    sha_update(&ctx, data, len);
 	}
 	sha_final(digeststr, &ctx);
