@@ -81,6 +81,11 @@ Same as sha1(), but will return the digest in hexadecimal form.
 
 Same as sha1(), but will return the digest as a base64 encoded string.
 
+Note that the base64 encoded string returned is not padded to be a
+multiple of 4 bytes long.  If you want interoperability with other
+base64 encoded sha1 digests you might want to append the redundant
+string "=" to the result.
+
 =item sha1_transform($data)
 
 Implements the basic SHA1 trasnform on a 64 byte block. $data and the returned $digest are
