@@ -10,6 +10,26 @@ extern "C" {
 }
 #endif
 
+#ifndef PERL_VERSION
+#    include <patchlevel.h>
+#    if !(defined(PERL_VERSION) || (SUBVERSION > 0 && defined(PATCHLEVEL)))
+#        include <could_not_find_Perl_patchlevel.h>
+#    endif
+#    define PERL_REVISION       5
+#    define PERL_VERSION        PATCHLEVEL
+#    define PERL_SUBVERSION     SUBVERSION
+#endif
+
+#if PERL_VERSION <= 4 && !defined(PL_dowarn)
+   #define PL_dowarn dowarn
+#endif
+
+#ifdef G_WARN_ON
+   #define DOWARN (PL_dowarn & G_WARN_ON)
+#else
+   #define DOWARN PL_dowarn
+#endif
+
 #ifdef SvPVbyte
    #if PERL_REVISION == 5 && PERL_VERSION < 7
        /* SvPVbyte does not work in perl-5.6.1, borrowed version for 5.7.3 */
@@ -442,6 +462,22 @@ new(xclass)
 	XSRETURN(1);
 
 void
+clone(self)
+        SV* self
+    PREINIT:
+        SHA_INFO* cont = get_md5_ctx(self);
+        char *myname = sv_reftype(SvRV(self),TRUE);
+        SHA_INFO* context;
+    PPCODE:
+        STRLEN my_na;
+        New(55, context, 1, SHA_INFO);
+        ST(0) = sv_newmortal();
+        sv_setref_pv(ST(0), myname , (void*)context);
+        SvREADONLY_on(SvRV(ST(0)));
+        memcpy(context,cont,sizeof(SHA_INFO));
+        XSRETURN(1);
+
+void
 DESTROY(context)
 	SHA_INFO* context
     CODE:
@@ -472,11 +508,18 @@ addfile(self, fh)
 	int  n;
     CODE:
         if (fh) {
-	    /* Process blocks until EOF */
+	    /* Process blocks until EOF or error */
             while ( (n = PerlIO_read(fh, buffer, sizeof(buffer)))) {
 		sha_update(context, buffer, n);
 	    }
+	    if (PerlIO_error(fh)) {
+		croak("Reading from filehandle failed");
+	    }
         }
+        else {
+	    croak("No filehandle passed");
+        }
+ 
 	XSRETURN(1);  /* self */
 
 void
@@ -508,6 +551,31 @@ sha1(...)
 	unsigned char digeststr[20];
     PPCODE:
 	sha_init(&ctx);
+
+	if (DOWARN) {
+            char *msg = 0;
+	    if (items == 1) {
+		if (SvROK(ST(0))) {
+                    SV* sv = SvRV(ST(0));
+		    if (SvOBJECT(sv) && strEQ(HvNAME(SvSTASH(sv)), "Digest::SHA1"))
+		        msg = "probably called as method";
+		    else
+			msg = "called with reference argument";
+		}
+	    }
+	    else if (items > 1) {
+		data = (unsigned char *)SvPVbyte(ST(0), len);
+		if (len == 12 && memEQ("Digest::SHA1", data, 12)) {
+		    msg = "probably called as class method";
+		}
+	    }
+	    if (msg) {
+		char *f = (ix == F_BIN) ? "sha1" :
+                          (ix == F_HEX) ? "sha1_hex" : "sha1_base64";
+	        warn("&Digest::SHA1::%s function %s", f, msg);
+	    }
+	}
+
 	for (i = 0; i < items; i++) {
 	    data = (unsigned char *)(SvPVbyte(ST(i), len));
 	    sha_update(&ctx, data, len);
