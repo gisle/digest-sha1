@@ -1,4 +1,4 @@
-print "1..8\n";
+print "1..13\n";
 
 use Digest::SHA1 qw(sha1 sha1_hex sha1_base64 sha1_transform);
 
@@ -43,3 +43,20 @@ print "not " unless sha1_transform(pack('H*', '86da486230e353e0ec5e9220876c68789
 	eq pack('H*', '1da304aec652c21d4f54642434705c91aeaf9abe');
 print "ok 8\n";
 
+$digest = Digest::SHA1->new;
+print "not " unless $digest->hexdigest eq "da39a3ee5e6b4b0d3255bfef95601890afd80709";
+print "ok 9\n";
+
+print "not " unless $digest->clone->hexdigest eq "da39a3ee5e6b4b0d3255bfef95601890afd80709";
+print "ok 10\n";
+
+$digest->add("abc");
+print "not " unless $digest->clone->hexdigest eq "a9993e364706816aba3e25717850c26c9cd0d89d";
+print "ok 11\n";
+
+$digest->add("d");
+print "not " unless $digest->hexdigest eq "81fe8bfe87576c3ecb22426f8e57847382917acf";
+print "ok 12\n";
+
+print "not " unless $digest->hexdigest eq "da39a3ee5e6b4b0d3255bfef95601890afd80709";
+print "ok 13\n";

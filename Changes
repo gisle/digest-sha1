@@ -1,8 +1,19 @@
-2003-06-04   Mike McCauley (mikem@open.com.au)
+2003-07-05   Gisle Aas <gisle@ActiveState.com>
 
    Release 2.03
 
-   Added sha1_transform, required to implement NIST FIPS 186-2.
+   Implemented sha1_transform, required to implement NIST FIPS 186-2.
+   Contributed by Mike McCauley <mikem@open.com.au>.
+
+   Make it build on 64-bit platforms with 32-bit longs.  At least
+   I hope it will.
+
+   Sync up with the Digest::MD5 implementation:
+      - added clone method
+      - addfile croaks if it can't read
+      - the sha1*() functions warn if called as method
+        or with reference arguments.
+
 
 
 2002-12-27   Gisle Aas <gisle@ActiveState.com>
