@@ -1,3 +1,15 @@
+2003-10-13   Gisle Aas <gisle@ActiveState.com>
+
+   Release 2.06
+
+   The sha1_transform() function did not check that it was actually
+   passed any arguments.
+
+   Complete self-contained documentation included (copied from
+   Digest::MD5), since the Digest.pm manpage is not always available.
+
+
+
 2003-10-06   Gisle Aas <gisle@ActiveState.com>
 
    Release 2.05
