@@ -153,7 +153,7 @@ nether regions of the anatomy...
 
 #if BYTEORDER == 0x1234
 #define SWAP_DONE
-    assert(sizeof(ULONG) == 4);
+    /* assert(sizeof(ULONG) == 4); */
     for (i = 0; i < 16; ++i) {
 	T = *((ULONG *) dp);
 	dp += 4;
@@ -164,7 +164,7 @@ nether regions of the anatomy...
 
 #if BYTEORDER == 0x4321
 #define SWAP_DONE
-    assert(sizeof(ULONG) == 4);
+    /* assert(sizeof(ULONG) == 4); */
     for (i = 0; i < 16; ++i) {
 	T = *((ULONG *) dp);
 	dp += 4;
@@ -174,7 +174,7 @@ nether regions of the anatomy...
 
 #if BYTEORDER == 0x12345678
 #define SWAP_DONE
-    assert(sizeof(ULONG) == 8);
+    /* assert(sizeof(ULONG) == 8); */
     for (i = 0; i < 16; i += 2) {
 	T = *((ULONG *) dp);
 	dp += 8;
@@ -188,7 +188,7 @@ nether regions of the anatomy...
 
 #if BYTEORDER == 0x87654321
 #define SWAP_DONE
-    assert(sizeof(ULONG) == 8);
+    /* assert(sizeof(ULONG) == 8); */
     for (i = 0; i < 16; i += 2) {
 	T = *((ULONG *) dp);
 	dp += 8;
