@@ -465,7 +465,7 @@ void
 clone(self)
         SV* self
     PREINIT:
-        SHA_INFO* cont = get_md5_ctx(self);
+        SHA_INFO* cont = get_sha_info(self);
         char *myname = sv_reftype(SvRV(self),TRUE);
         SHA_INFO* context;
     PPCODE:
