@@ -1,3 +1,12 @@
+2001-12-30   Gisle Aas <gisle@ActiveState.com>
+
+   Release 2.01
+
+   Applied trivial win32 fix from Gurusamy Sarathy that
+   avoids stray temp files left after 'make test'.
+
+
+
 2001-03-13   Gisle Aas <gisle@ActiveState.com>
 
    Release 2.00
