@@ -26,5 +26,6 @@ open(FILE, "stest$$.txt") || die;
 $digest = Digest::SHA1->new->addfile(*FILE)->b64digest;
 print "$digest\nnot " unless $digest eq "1ZuIK/sQeBwqh+dIACqpnoRQUE4";
 print "ok 5\n";
+close(FILE);
 
 unlink("stest$$.txt");
