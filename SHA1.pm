@@ -174,9 +174,9 @@ or reset the $sha1 object if this occurs.
 In most cases you want to make sure that the $io_handle is in
 C<binmode> before you pass it as argument to the addfile() method.
 
-=item $md5->add_bits($data, $nbits)
+=item $sha1->add_bits($data, $nbits)
 
-=item $md5->add_bits($bitstring)
+=item $sha1->add_bits($bitstring)
 
 This implementation of SHA-1 only supports byte oriented input so you
 might only add bits as multiples of 8.  If you need bit level support
@@ -212,7 +212,7 @@ and '/'.
 
 The base64 encoded string returned is not padded to be a multiple of 4
 bytes long.  If you want interoperability with other base64 encoded
-md5 digests you might want to append the string "=" to the result.
+SHA-1 digests you might want to append the string "=" to the result.
 
 =back
 
