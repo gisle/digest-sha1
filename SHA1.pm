@@ -28,7 +28,7 @@ __END__
 
 =head1 NAME
 
-Digest::SHA1 - Perl interface to the SHA-1 Algorithm
+Digest::SHA1 - Perl interface to the SHA-1 algorithm
 
 =head1 SYNOPSIS
 
