@@ -1,15 +1,14 @@
-This distribution provide version 0.01 of the Digest::SHA1 module.  It
-is a very simple adaptor for Uwe Hollerbach's SHA.pm module that make
-it conform to the common Digest:: module interface.  It is currently
-needed to make the Digest::HMAC_SHA1 module distributed in the
-Digest-MD5 distribution work.
+The Digest::SHA1 module allows you to use the NIST SHA-1 message
+digest algorithm from within Perl programs.  The algorithm takes as
+input a message of arbitrary length and produces as output a 160-bit
+"fingerprint" or "message digest" of the input.
 
-The plan is that Uwe will provide a real Digest::SHA1 implementation
-soon, and make SHA.pm be "emulated" instead.  This module will go away
-then.
+SHA1 is described at <http://www.itl.nist.gov/fipspubs/fip180-1.htm>
 
-See also L<Digest> and L<Digest::MD5> found in the Digest-MD5
-distribution.
+You will need Perl version 5.004 or better to install this module.
 
--- 
-Gisle Aas <gisle@aas.no>
+Copyright 1999-2001 Gisle Aas.
+Copyright 1997 Uwe Hollerbach.
+
+This library is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself.
