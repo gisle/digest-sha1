@@ -522,7 +522,7 @@ addfile(self, fh)
     CODE:
         if (fh) {
 	    /* Process blocks until EOF or error */
-            while ( (n = PerlIO_read(fh, buffer, sizeof(buffer)))) {
+            while ( (n = PerlIO_read(fh, buffer, sizeof(buffer))) > 0) {
 		sha_update(context, buffer, n);
 	    }
 	    if (PerlIO_error(fh)) {
