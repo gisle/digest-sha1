@@ -488,7 +488,6 @@ clone(self)
         char *myname = sv_reftype(SvRV(self),TRUE);
         SHA_INFO* context;
     PPCODE:
-        STRLEN my_na;
         New(55, context, 1, SHA_INFO);
         ST(0) = sv_newmortal();
         sv_setref_pv(ST(0), myname , (void*)context);
@@ -608,7 +607,6 @@ sha1_transform(data)
 	SV* data
     PREINIT:
         SHA_INFO ctx;
-        int i;
         unsigned char *data_pv;
         unsigned char test[64];
         STRLEN len;
