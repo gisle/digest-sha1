@@ -352,14 +352,14 @@ static void sha_final(unsigned char digest[20], SHA_INFO *sha_info)
 	memset(((U8 *) sha_info->data) + count, 0,
 	    SHA_BLOCKSIZE - 8 - count);
     }
-    sha_info->data[56] = (hi_bit_count >> 24) & 0xff;
-    sha_info->data[57] = (hi_bit_count >> 16) & 0xff;
-    sha_info->data[58] = (hi_bit_count >>  8) & 0xff;
-    sha_info->data[59] = (hi_bit_count >>  0) & 0xff;
-    sha_info->data[60] = (lo_bit_count >> 24) & 0xff;
-    sha_info->data[61] = (lo_bit_count >> 16) & 0xff;
-    sha_info->data[62] = (lo_bit_count >>  8) & 0xff;
-    sha_info->data[63] = (lo_bit_count >>  0) & 0xff;
+    sha_info->data[56] = (U8)((hi_bit_count >> 24) & 0xff);
+    sha_info->data[57] = (U8)((hi_bit_count >> 16) & 0xff);
+    sha_info->data[58] = (U8)((hi_bit_count >>  8) & 0xff);
+    sha_info->data[59] = (U8)((hi_bit_count >>  0) & 0xff);
+    sha_info->data[60] = (U8)((lo_bit_count >> 24) & 0xff);
+    sha_info->data[61] = (U8)((lo_bit_count >> 16) & 0xff);
+    sha_info->data[62] = (U8)((lo_bit_count >>  8) & 0xff);
+    sha_info->data[63] = (U8)((lo_bit_count >>  0) & 0xff);
     sha_transform_and_copy(digest, sha_info);
 }
 
