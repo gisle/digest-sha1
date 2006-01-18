@@ -1,3 +1,11 @@
+2006-01-18   Gisle Aas <gisle@ActiveState.com>
+
+   Release 2.11
+
+   Internal cleanup to avoid some compiler warnings.
+
+
+
 2004-04-05   Gisle Aas <gisle@ActiveState.com>
 
    Release 2.10
