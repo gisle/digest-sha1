@@ -63,6 +63,11 @@ digest algorithm from within Perl programs.  The algorithm takes as
 input a message of arbitrary length and produces as output a 160-bit
 "fingerprint" or "message digest" of the input.
 
+In 2005, security flaws were identified in SHA-1, namely that a possible
+mathematical weakness might exist, indicating that a stronger hash function
+would be desirable.  The L<Digest::SHA> module implements the stronger
+algorithms in the SHA family.
+
 The C<Digest::SHA1> module provide a procedural interface for simple
 use, as well as an object oriented interface that can handle messages
 of arbitrary length and which can read files directly.
@@ -221,6 +226,8 @@ SHA-1 digests you might want to append the string "=" to the result.
 L<Digest>, L<Digest::HMAC_SHA1>, L<Digest::SHA>, L<Digest::MD5>
 
 http://www.itl.nist.gov/fipspubs/fip180-1.htm
+
+http://en.wikipedia.org/wiki/SHA_hash_functions
 
 =head1 COPYRIGHT
 
