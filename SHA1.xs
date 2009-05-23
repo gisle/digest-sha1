@@ -381,7 +381,7 @@ static SHA_INFO* get_sha_info(pTHX_ SV* sv)
 
 static char* hex_20(const unsigned char* from, char* to)
 {
-    static char *hexdigits = "0123456789abcdef";
+    static const char *hexdigits = "0123456789abcdef";
     const unsigned char *end = from + 20;
     char *d = to;
 
@@ -396,7 +396,7 @@ static char* hex_20(const unsigned char* from, char* to)
 
 static char* base64_20(const unsigned char* from, char* to)
 {
-    static char* base64 =
+    static const char* base64 =
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     const unsigned char *end = from + 20;
     unsigned char c1, c2, c3;
@@ -483,7 +483,7 @@ clone(self)
         SV* self
     PREINIT:
         SHA_INFO* cont = get_sha_info(aTHX_ self);
-        char *myname = sv_reftype(SvRV(self),TRUE);
+        const char *myname = sv_reftype(SvRV(self),TRUE);
         SHA_INFO* context;
     PPCODE:
         New(55, context, 1, SHA_INFO);
@@ -569,7 +569,7 @@ sha1(...)
 	sha_init(&ctx);
 
 	if (DOWARN) {
-            char *msg = 0;
+            const char *msg = 0;
 	    if (items == 1) {
 		if (SvROK(ST(0))) {
                     SV* sv = SvRV(ST(0));
@@ -586,8 +586,8 @@ sha1(...)
 		}
 	    }
 	    if (msg) {
-		char *f = (ix == F_BIN) ? "sha1" :
-                          (ix == F_HEX) ? "sha1_hex" : "sha1_base64";
+		const char *f = (ix == F_BIN) ? "sha1" :
+                                (ix == F_HEX) ? "sha1_hex" : "sha1_base64";
 	        warn("&Digest::SHA1::%s function %s", f, msg);
 	    }
 	}
