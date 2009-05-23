@@ -1,7 +1,0 @@
-*.bs
-*.c
-*.o
-Makefile
-pm_to_blib
-blib
-*.tar.gz
