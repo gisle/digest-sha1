@@ -1,3 +1,18 @@
+2009-05-23   Release 2.12
+
+    Gisle Aas (6):
+	  Get rid of the old CVS ids
+	  Avoid "redefined" error for ULONG on Win64
+	  Less optimizations on IRIX [RT#8999]
+	  Clean up the 'git status' output
+	  Mention that SHA-1 might be weak [RT#11880]
+	  Ensure more stuff in the META.yml file [RT#40757]
+
+    Steve Peters (1):
+	  Quiet warnings when compiled with -Wwrite-strings [RT#31915]
+
+
+
 2006-01-18   Gisle Aas <gisle@ActiveState.com>
 
    Release 2.11
