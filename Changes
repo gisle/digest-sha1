@@ -1,3 +1,10 @@
+2010-07-03   Release 2.13
+
+    Mike McCauley (1):
+          Fix memory leak in sha1_transform
+
+
+
 2009-05-23   Release 2.12
 
     Gisle Aas (6):
