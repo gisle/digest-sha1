@@ -199,7 +199,7 @@ Note that the C<digest> operation is effectively a destructive,
 read-once operation. Once it has been performed, the C<Digest::SHA1>
 object is automatically C<reset> and can be used to calculate another
 digest value.  Call $sha1->clone->digest if you want to calculate the
-digest without reseting the digest state.
+digest without resetting the digest state.
 
 =item $sha1->hexdigest
 
