@@ -12,7 +12,9 @@ WriteMakefile(
 	                'Digest::base' => '1.00',
                       },
     'META_MERGE'   => {
-	repository => 'http://github.com/gisle/digest-sha1',
+	resources => {
+	    repository => 'http://github.com/gisle/digest-sha1',
+        },
     },
     'dist'         => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
 );
