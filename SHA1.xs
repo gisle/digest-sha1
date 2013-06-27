@@ -423,6 +423,7 @@ static char* base64_20(const unsigned char* from, char* to)
 #define F_BIN 0
 #define F_HEX 1
 #define F_B64 2
+#define F_B64_PAD 3
 
 static SV* make_mortal_sv(pTHX_ const unsigned char *src, int type)
 {
@@ -442,6 +443,12 @@ static SV* make_mortal_sv(pTHX_ const unsigned char *src, int type)
     case F_B64:
 	ret = base64_20(src, result);
 	len = 27;
+	break;
+    case F_B64_PAD:
+	ret = base64_20(src, result);
+	ret[27] = '=';
+	ret[28] = '\0';
+	len = 28;
 	break;
     default:
 	croak("Bad convertion type (%d)", type);
@@ -545,6 +552,7 @@ digest(context)
 	Digest::SHA1::digest    = F_BIN
 	Digest::SHA1::hexdigest = F_HEX
 	Digest::SHA1::b64digest = F_B64
+	Digest::SHA1::b64digest_padded = F_B64_PAD
     PREINIT:
 	unsigned char digeststr[20];
     PPCODE:
@@ -559,6 +567,7 @@ sha1(...)
 	Digest::SHA1::sha1        = F_BIN
 	Digest::SHA1::sha1_hex    = F_HEX
 	Digest::SHA1::sha1_base64 = F_B64
+	Digest::SHA1::sha1_base64_padded = F_B64_PAD
     PREINIT:
 	SHA_INFO ctx;
 	int i;
@@ -587,7 +596,8 @@ sha1(...)
 	    }
 	    if (msg) {
 		const char *f = (ix == F_BIN) ? "sha1" :
-                                (ix == F_HEX) ? "sha1_hex" : "sha1_base64";
+                                (ix == F_HEX) ? "sha1_hex" :
+                                (ix == F_B64) ? "sha1_base64" : "sha1_base64_padded";
 	        warn("&Digest::SHA1::%s function %s", f, msg);
 	    }
 	}

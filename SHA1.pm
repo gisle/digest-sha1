@@ -7,7 +7,7 @@ $VERSION = '2.13';
 
 require Exporter;
 *import = \&Exporter::import;
-@EXPORT_OK = qw(sha1 sha1_hex sha1_base64 sha1_transform);
+@EXPORT_OK = qw(sha1 sha1_hex sha1_base64 sha1_base64_padded sha1_transform);
 
 require DynaLoader;
 @ISA=qw(DynaLoader);
