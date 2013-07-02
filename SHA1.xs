@@ -9,50 +9,6 @@ extern "C" {
 }
 #endif
 
-#ifndef PERL_VERSION
-#    include <patchlevel.h>
-#    if !(defined(PERL_VERSION) || (SUBVERSION > 0 && defined(PATCHLEVEL)))
-#        include <could_not_find_Perl_patchlevel.h>
-#    endif
-#    define PERL_REVISION       5
-#    define PERL_VERSION        PATCHLEVEL
-#    define PERL_SUBVERSION     SUBVERSION
-#endif
-
-#if PERL_VERSION <= 4 && !defined(PL_dowarn)
-   #define PL_dowarn dowarn
-#endif
-
-#ifdef G_WARN_ON
-   #define DOWARN (PL_dowarn & G_WARN_ON)
-#else
-   #define DOWARN PL_dowarn
-#endif
-
-#ifdef SvPVbyte
-   #if PERL_REVISION == 5 && PERL_VERSION < 7
-       /* SvPVbyte does not work in perl-5.6.1, borrowed version for 5.7.3 */
-       #undef SvPVbyte
-       #define SvPVbyte(sv, lp) \
-          ((SvFLAGS(sv) & (SVf_POK|SVf_UTF8)) == (SVf_POK) \
-           ? ((lp = SvCUR(sv)), SvPVX(sv)) : my_sv_2pvbyte(aTHX_ sv, &lp))
-
-       static char *
-       my_sv_2pvbyte(pTHX_ register SV *sv, STRLEN *lp)
-       {
-           sv_utf8_downgrade(sv,0);
-           return SvPV(sv,*lp);
-       }
-   #endif
-#else
-   #define SvPVbyte SvPV
-#endif
-
-#ifndef dTHX
-   #define pTHX_
-   #define aTHX_
-#endif
-
 /* NIST Secure Hash Algorithm */
 /* heavily modified by Uwe Hollerbach <uh@alumni.caltech edu> */
 /* from Peter C. Gutmann's implementation as found in */
@@ -370,12 +326,76 @@ static void sha_final(unsigned char digest[20], SHA_INFO *sha_info)
 #define INT2PTR(any,d)	(any)(d)
 #endif
 
+#ifdef USE_ITHREADS
+static int dup_sha_info(pTHX_ MAGIC *mg, CLONE_PARAMS *params)
+{
+    SHA_INFO *new_ctx;
+    PERL_UNUSED_VAR(params);
+    New(55, new_ctx, 1, SHA_INFO);
+    memcpy(new_ctx, mg->mg_ptr, sizeof(SHA_INFO));
+    mg->mg_ptr = (char *)new_ctx;
+    return 0;
+}
+#endif
+
+static MGVTBL vtbl_sha1 = {
+    NULL, /* get */
+    NULL, /* set */
+    NULL, /* len */
+    NULL, /* clear */
+    NULL, /* free */
+#ifdef MGf_COPY
+    NULL, /* copy */
+#endif
+#ifdef MGf_DUP
+# ifdef USE_ITHREADS
+    dup_sha_info,
+# else
+    NULL, /* dup */
+# endif
+#endif
+#ifdef MGf_LOCAL
+    NULL /* local */
+#endif
+};
+
 static SHA_INFO* get_sha_info(pTHX_ SV* sv)
 {
-    if (sv_derived_from(sv, "Digest::SHA1"))
-	return INT2PTR(SHA_INFO*, SvIV(SvRV(sv)));
-    croak("Not a reference to a Digest::SHA1 object");
+    MAGIC *mg;
+
+    if (!sv_derived_from(sv, "Digest::SHA1"))
+	croak("Not a reference to a Digest::SHA1 object");
+
+    for (mg = SvMAGIC(SvRV(sv)); mg; mg = mg->mg_moremagic) {
+	if (mg->mg_type == PERL_MAGIC_ext && mg->mg_virtual == &vtbl_sha1) {
+	    return (SHA_INFO *)mg->mg_ptr;
+	}
+    }
+
+    croak("Failed to get SHA_INFO pointer");
     return (SHA_INFO*)0; /* some compilers insist on a return value */
+}
+
+static SV *new_sha_info(pTHX_ SHA_INFO *context, const char *klass)
+{
+    SV *sv = newSV(0);
+    SV *obj = newRV_noinc(sv);
+#ifdef USE_ITHREADS
+    MAGIC *mg;
+#endif
+
+    sv_bless(obj, gv_stashpv(klass, 0));
+
+#ifdef USE_ITHREADS
+    mg =
+#endif
+	sv_magicext(sv, NULL, PERL_MAGIC_ext, &vtbl_sha1, (void *)context, 0);
+
+#ifdef USE_ITHREADS
+    mg->mg_flags |= MGf_DUP;
+#endif
+
+    return obj;
 }
 
 
@@ -467,11 +487,9 @@ new(xclass)
     PPCODE:
 	if (!SvROK(xclass)) {
 	    STRLEN my_na;
-	    char *sclass = SvPV(xclass, my_na);
+	    const char *sclass = SvPV(xclass, my_na);
 	    New(55, context, 1, SHA_INFO);
-	    ST(0) = sv_newmortal();
-	    sv_setref_pv(ST(0), sclass, (void*)context);
-	    SvREADONLY_on(SvRV(ST(0)));
+	    ST(0) = sv_2mortal(new_sha_info(aTHX_ context, sclass));
 	} else {
 	    context = get_sha_info(aTHX_ xclass);
 	}
@@ -487,9 +505,7 @@ clone(self)
         SHA_INFO* context;
     PPCODE:
         New(55, context, 1, SHA_INFO);
-        ST(0) = sv_newmortal();
-        sv_setref_pv(ST(0), myname , (void*)context);
-        SvREADONLY_on(SvRV(ST(0)));
+        ST(0) = sv_2mortal(new_sha_info(aTHX_ context, myname));
         memcpy(context,cont,sizeof(SHA_INFO));
         XSRETURN(1);
 
@@ -568,7 +584,7 @@ sha1(...)
     PPCODE:
 	sha_init(&ctx);
 
-	if (DOWARN) {
+	if (PL_dowarn & G_WARN_ON) {
             const char *msg = 0;
 	    if (items == 1) {
 		if (SvROK(ST(0))) {

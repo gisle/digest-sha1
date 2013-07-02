@@ -5,7 +5,7 @@ input a message of arbitrary length and produces as output a 160-bit
 
 SHA1 is described at <http://www.itl.nist.gov/fipspubs/fip180-1.htm>
 
-You will need Perl version 5.004 or better to install this module.
+You will need Perl version 5.8 or better to install this module.
 
 Copyright 1999-2004 Gisle Aas.
 Copyright 1997 Uwe Hollerbach.
